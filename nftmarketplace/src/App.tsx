@@ -3,8 +3,10 @@ import { nftsData } from './data/nfts'
 import { NFTGrid } from './components/NFTGrid'
 
 function App() {
-  const [searchTerm, setSearchTerm] = useState ('')
-  const filteredNFTs = nftsData.filter((nft) => nft.name.toLowerCase().includes(searchTerm.toLowerCase()))
+  const [searchTerm, setSearchTerm] = useState('')
+  const filteredNFTs = nftsData.filter((nft) =>
+    `${nft.name} ${nft.creator}`.toLowerCase().includes(searchTerm.toLowerCase()),
+  )
 
   return (
     <main className="min-h-screen overflow-hidden bg-[#080914] text-white">
@@ -90,7 +92,7 @@ function App() {
           <input type="text" placeholder="Buscar por criatura ou criador..." value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} className='className="w-full max-w-md rounded-xl border border-white/10 bg-[#111220] px-4 py-3 text-sm text-white placeholder-slate-500 transition outline-none focus:border-violet-400 focus:ring-1 focus:ring-violet-400"'></input>
         </div>
 
-        <NFTGrid />
+        <NFTGrid nfts={filteredNFTs} />
       </section>
 
       <footer className="border-t border-white/10 px-6 py-6 text-center text-sm text-slate-500">

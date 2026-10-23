@@ -1,0 +1,21 @@
+import { test, expect } from '@playwright/test'
+
+test('catalogue search and NFT details', async ({ page }) => {
+  await page.goto('/')
+  await expect(page.getByRole('heading', { name: 'Encontre sua criatura cósmica' })).toBeVisible()
+  await page.getByPlaceholder('Nome ou criador').fill('Pietro')
+  await expect(page.getByText('Cosmic Creature #01')).toBeVisible()
+  await page.getByText('Cosmic Creature #01').click()
+  await expect(page.getByRole('heading', { name: 'Cosmic Creature #01' })).toBeVisible()
+})
+
+test('cart, account and checkout flow', async ({ page }) => {
+  await page.goto('/nft/1')
+  await page.getByRole('button', { name: 'Adicionar ao carrinho' }).click()
+  await page.goto('/cart')
+  await expect(page.getByText('Cosmic Creature #01')).toBeVisible()
+  await page.goto('/account')
+  await page.locator('form').getByRole('button', { name: 'Entrar', exact: true }).click()
+  await page.goto('/checkout')
+  await expect(page.getByRole('heading', { name: 'Checkout' })).toBeVisible()
+})

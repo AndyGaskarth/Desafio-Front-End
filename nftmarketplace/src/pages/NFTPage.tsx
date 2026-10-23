@@ -62,7 +62,7 @@ export function NFTPage() {
           />
         </div>
         <div className="nft-detail-panel">
-          <p className="eyebrow">Coleção Kurio Apes</p>
+          <p className="eyebrow">Coleção Kurio Cosmic</p>
           <h1>{data.name}</h1>
           <div className="detail-rating">
             <strong>{money(data.price)}</strong>
@@ -75,7 +75,7 @@ export function NFTPage() {
           <p className="nft-detail-description">{data.description}</p>
           <dl className="nft-attributes">
             <div><dt>ID do token</dt><dd>#{data.id.padStart(4, "0")}</dd></div>
-            <div><dt>Coleção</dt><dd>Kurio Apes</dd></div>
+            <div><dt>Coleção</dt><dd>Kurio Cosmic</dd></div>
             <div><dt>Atributos</dt><dd>Único · Colecionável · Raro</dd></div>
             <div><dt>Criador</dt><dd>{data.creator}</dd></div>
           </dl>
@@ -134,7 +134,7 @@ export function NFTPage() {
       <section className="nft-about">
         <h2>Detalhes do NFT</h2>
         <p>
-          {data.name} é uma obra digital da coleção Kurio Apes, criada por
+          {data.name} é uma obra digital da coleção Kurio Cosmic, criada por
           {` ${data.creator}`}. Cada peça possui identidade própria e pode ser
           adicionada à sua carteira após a compra.
         </p>

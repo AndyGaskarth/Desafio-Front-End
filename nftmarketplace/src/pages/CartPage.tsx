@@ -39,9 +39,12 @@ export function CartPage() {
                   <h2 className="font-semibold">{line.nft!.name}</h2>
                   <p className="mt-1 text-sm text-cyan-200">{money(line.nft!.price)}</p>
                   <div className="mt-4 flex items-center gap-2">
-                    <label className="text-xs text-slate-400">Qtd.
-                      <input type="number" min="1" max={line.nft!.availableQuantity} value={line.quantity} onChange={(event) => updateQuantity(line.nftId, Number(event.target.value))} className="ml-2 w-16 rounded-md border border-white/10 bg-[#090a14] px-2 py-1" />
-                    </label>
+                    <div className="flex items-center gap-2 text-xs text-slate-400">
+                      <span>Qtd.</span>
+                      <button type="button" aria-label={`Diminuir quantidade de ${line.nft!.name}`} onClick={() => updateQuantity(line.nftId, Math.max(1, line.quantity - 1))} className="grid h-8 w-8 place-items-center rounded-md border border-white/10 text-base text-white transition hover:border-violet-400 hover:bg-violet-400/10 active:scale-95">−</button>
+                      <output className="grid h-8 min-w-10 place-items-center rounded-md border border-white/10 bg-[#090a14] px-2 text-sm font-semibold text-white tabular-nums">{line.quantity}</output>
+                      <button type="button" aria-label={`Aumentar quantidade de ${line.nft!.name}`} disabled={line.quantity >= line.nft!.availableQuantity} onClick={() => updateQuantity(line.nftId, line.quantity + 1)} className="grid h-8 w-8 place-items-center rounded-md border border-white/10 text-base text-white transition hover:border-violet-400 hover:bg-violet-400/10 active:scale-95 disabled:cursor-not-allowed disabled:opacity-40">+</button>
+                    </div>
                     <button aria-label={`Remover ${line.nft!.name}`} onClick={() => updateQuantity(line.nftId, 0)} className="ml-auto p-2 text-slate-400"><Trash2 size={18} /></button>
                   </div>
                 </div>
@@ -57,12 +60,12 @@ export function CartPage() {
               <div className="flex justify-between border-t border-white/10 pt-3 text-lg font-semibold"><dt>Total</dt><dd>{money(total)}</dd></div>
             </dl>
             <label className="mt-6 block text-sm" htmlFor="coupon">Cupom</label>
-            <div className="mt-2 flex">
-              <input id="coupon" value={coupon} onChange={(event) => setCoupon(event.target.value)} className="min-w-0 flex-1 rounded-l-md border border-white/10 bg-[#090a14] px-3" />
-              <button onClick={applyCoupon} className="rounded-r-md bg-violet-500 px-3 text-sm">Aplicar</button>
-            </div>
+            <form className="mt-2 flex" onSubmit={(event) => { event.preventDefault(); void applyCoupon() }}>
+              <input id="coupon" value={coupon} onChange={(event) => setCoupon(event.target.value)} className="min-w-0 flex-1 rounded-l-md border border-white/10 bg-[#090a14] px-3" placeholder="Digite o cupom" />
+              <button type="submit" className="cursor-pointer rounded-r-md bg-violet-500 px-3 text-sm transition duration-200 hover:bg-violet-400 active:scale-95">Aplicar</button>
+            </form>
             <p role="status" className="mt-2 text-xs text-slate-400">{couponMessage}</p>
-            <button disabled={lines.some((line) => line.quantity > line.nft!.availableQuantity)} onClick={() => navigate({ to: '/checkout' })} className="mt-6 w-full rounded-md bg-violet-500 py-3 font-semibold disabled:opacity-40">Ir para checkout</button>
+            <button disabled={lines.some((line) => line.quantity > line.nft!.availableQuantity)} onClick={() => navigate({ to: '/checkout' })} className="mt-6 w-full rounded-md bg-violet-500 py-3 font-semibold transition duration-200 hover:bg-violet-400 active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-40">Ir para checkout</button>
           </aside>
         </div>
       )}

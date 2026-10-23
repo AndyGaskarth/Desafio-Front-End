@@ -4,7 +4,7 @@ export interface NFT {
   name: string;
   description: string;
   image: string;
-  price: number;
+  price: string;
   creator: string;
   availableQuantity: number;
 }

@@ -163,6 +163,12 @@ select {
   text-decoration: none;
 }
 
+.site-nav .site-login-authenticated {
+  border: 1px solid #d68a47;
+  background: #5b3821;
+  color: #fff;
+}
+
 .catalogue-page {
   width: min(100% - 64px, 1200px);
   margin: 0 auto;

@@ -60,7 +60,10 @@ export function AppShell() {
               <UserRound size={15} />
               {user && <span className="sr-only">{user.name}</span>}
             </Link>
-            <Link to="/account" className="warm-button site-login">
+            <Link
+              to="/account"
+              className={`warm-button site-login${user ? " site-login-authenticated" : ""}`}
+            >
               {user?.name ?? "Entrar"}
             </Link>
           </nav>

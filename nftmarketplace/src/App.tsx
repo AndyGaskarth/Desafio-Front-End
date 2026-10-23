@@ -1,21 +1,32 @@
-import { useState } from 'react'
-import { nftsData } from './data/nfts'
-import { NFTGrid } from './components/NFTGrid'
+import { useState } from "react";
+import { nftsData } from "./data/nfts";
+import { NFTGrid } from "./components/NFTGrid";
 
 function App() {
-  const [searchTerm, setSearchTerm] = useState('')
+  const [searchTerm, setSearchTerm] = useState("");
   const filteredNFTs = nftsData.filter((nft) =>
-    `${nft.name} ${nft.creator}`.toLowerCase().includes(searchTerm.toLowerCase()),
-  )
+    `${nft.name} ${nft.creator}`
+      .toLowerCase()
+      .includes(searchTerm.toLowerCase()),
+  );
 
   return (
     <main className="min-h-screen overflow-hidden bg-[#080914] text-white">
       <header className="mx-auto flex w-full max-w-7xl items-center justify-between px-6 py-6 sm:px-10">
-        <a className="text-xl font-bold tracking-[0.2em] text-white" href="#inicio">
+        <a
+          className="text-xl font-bold tracking-[0.2em] text-white"
+          href="#inicio"
+        >
           NEXUS
         </a>
-        <nav aria-label="Navegação principal" className="flex items-center gap-6">
-          <a className="hidden text-sm text-slate-300 transition hover:text-white sm:inline" href="#colecao">
+        <nav
+          aria-label="Navegação principal"
+          className="flex items-center gap-6"
+        >
+          <a
+            className="hidden text-sm text-slate-300 transition hover:text-white sm:inline"
+            href="#colecao"
+          >
             Coleção
           </a>
           <a
@@ -73,7 +84,10 @@ function App() {
         </div>
       </section>
 
-      <section className="mx-auto w-full max-w-7xl px-6 pb-24 sm:px-10" id="colecao">
+      <section
+        className="mx-auto w-full max-w-7xl px-6 pb-24 sm:px-10"
+        id="colecao"
+      >
         <div className="mb-8 flex flex-col justify-between gap-3 sm:mb-10 sm:flex-row sm:items-end">
           <div>
             <p className="text-xs font-bold uppercase tracking-[0.25em] text-violet-300">
@@ -89,7 +103,13 @@ function App() {
         </div>
 
         <div className="mb-10 flex justify-center">
-          <input type="text" placeholder="Buscar por criatura ou criador..." value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} className='className="w-full max-w-md rounded-xl border border-white/10 bg-[#111220] px-4 py-3 text-sm text-white placeholder-slate-500 transition outline-none focus:border-violet-400 focus:ring-1 focus:ring-violet-400"'></input>
+          <input
+            type="text"
+            placeholder="Buscar por criatura ou criador..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className='className="w-full max-w-md rounded-xl border border-white/10 bg-[#111220] px-4 py-3 text-sm text-white placeholder-slate-500 transition outline-none focus:border-violet-400 focus:ring-1 focus:ring-violet-400"'
+          ></input>
         </div>
 
         <NFTGrid nfts={filteredNFTs} />
@@ -99,7 +119,7 @@ function App() {
         Nexus — Criaturas Cósmicas
       </footer>
     </main>
-  )
+  );
 }
 
-export default App
+export default App;

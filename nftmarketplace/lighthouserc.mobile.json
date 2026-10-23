@@ -1,0 +1,4 @@
+{
+  "extends": "./lighthouserc.json",
+  "ci": { "collect": { "settings": { "preset": "mobile", "screenEmulation": { "mobile": true, "width": 390, "height": 844, "deviceScaleFactor": 2, "disabled": false } } } }
+}

@@ -1,6 +1,18 @@
 {
   "ci": {
-    "collect": { "url": ["http://127.0.0.1:4173/"], "startServerCommand": "npm run preview -- --host 127.0.0.1 --port 4173", "numberOfRuns": 1 },
-    "assert": { "assertions": { "categories:performance": "warn", "categories:accessibility": "warn", "categories:best-practices": "warn", "categories:seo": "warn" } }
+    "collect": {
+      "url": ["http://127.0.0.1:4173/", "http://127.0.0.1:4173/nft/1"],
+      "startServerCommand": "npm run preview -- --host 127.0.0.1 --port 4173",
+      "numberOfRuns": 3
+    },
+    "assert": {
+      "assertions": {
+        "categories:performance": ["warn", { "minScore": 0.90 }],
+        "categories:accessibility": ["warn", { "minScore": 0.95 }],
+        "categories:best-practices": ["warn", { "minScore": 0.95 }],
+        "categories:seo": ["warn", { "minScore": 0.90 }]
+      }
+    },
+    "upload": { "target": "filesystem", "outputDir": ".lighthouseci" }
   }
 }

@@ -1,16 +1,18 @@
-import { useState } from 'react'
-import type { NFT } from '../types/nft'
+import { useState } from "react";
+import type { NFT } from "../types/nft";
+import { responsiveImage } from "../lib/nftImage";
 
 interface NFTCardProps {
-  nft: NFT
+  nft: NFT;
 }
 
 export function NFTCard({ nft }: NFTCardProps) {
-  const [isFavorite, setIsFavorite] = useState(false)
+  const responsive = responsiveImage(nft.id, nft.image);
+  const [isFavorite, setIsFavorite] = useState(false);
 
   const handleToggleFavorite = () => {
-    setIsFavorite((prev) => !prev)
-  }
+    setIsFavorite((prev) => !prev);
+  };
 
   return (
     <article className="group overflow-hidden rounded-2xl border border-white/10 bg-[#111220] transition duration-300 hover:-translate-y-1 hover:border-violet-400/50 hover:shadow-xl hover:shadow-violet-950/20">
@@ -20,14 +22,18 @@ export function NFTCard({ nft }: NFTCardProps) {
           alt={nft.name}
           className="aspect-square w-full object-cover transition duration-500 group-hover:scale-105"
           loading="lazy"
-          src={nft.image}
+          src={responsive.image}
+          srcSet={responsive.srcSet}
+          sizes="(max-width: 640px) 92vw, (max-width: 1024px) 45vw, 390px"
         />
 
         {/* Botão de Favoritar */}
         <button
           type="button"
           onClick={handleToggleFavorite}
-          aria-label={isFavorite ? 'Remover dos favoritos' : 'Adicionar aos favoritos'}
+          aria-label={
+            isFavorite ? "Remover dos favoritos" : "Adicionar aos favoritos"
+          }
           className="absolute right-3 top-3 flex h-9 w-9 items-center justify-center rounded-full bg-black/50 backdrop-blur-md transition hover:scale-110 active:scale-95 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
         >
           <svg
@@ -37,8 +43,8 @@ export function NFTCard({ nft }: NFTCardProps) {
             stroke="currentColor"
             className={`h-5 w-5 transition-colors duration-200 ${
               isFavorite
-                ? 'fill-rose-500 text-rose-500'
-                : 'fill-transparent text-white/80 hover:text-white'
+                ? "fill-rose-500 text-rose-500"
+                : "fill-transparent text-white/80 hover:text-white"
             }`}
           >
             <path
@@ -76,5 +82,5 @@ export function NFTCard({ nft }: NFTCardProps) {
         </div>
       </div>
     </article>
-  )
+  );
 }

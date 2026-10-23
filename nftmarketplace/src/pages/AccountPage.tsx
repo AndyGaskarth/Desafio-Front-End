@@ -1,23 +1,194 @@
-import { useState } from 'react'
-import type { FormEvent } from 'react'
-import { Link } from '@tanstack/react-router'
-import { getUser, setUser } from '../lib/state'
-import { login, register, saveProfile } from '../lib/api'
-import type { Wallet } from '../types/contracts'
+import { useState } from "react";
+import type { FormEvent } from "react";
+import { Link } from "@tanstack/react-router";
+import { getUser, setUser } from "../lib/state";
+import { login, register, saveProfile } from "../lib/api";
+import type { Wallet } from "../types/contracts";
+import { Trash2 } from "lucide-react";
 
 export function AccountPage() {
-  const [session, setSession] = useState(getUser()); const [mode, setMode] = useState<'login' | 'register'>('login')
-  const [email, setEmail] = useState('demo@nexus.com'); const [password, setPassword] = useState('demo123'); const [name, setName] = useState(''); const [error, setError] = useState('')
+  const [session, setSession] = useState(getUser());
+  const [mode, setMode] = useState<"login" | "register">("login");
+  const [email, setEmail] = useState("demo@nexus.com");
+  const [password, setPassword] = useState("demo123");
+  const [name, setName] = useState("");
+  const [error, setError] = useState("");
+
   const submit = async (event: FormEvent) => {
-    event.preventDefault(); setError('')
-    try { const user = mode === 'login' ? await login(email, password) : await register(name, email, password); setUser(user); setSession(user) }
-    catch (reason) { setError(reason instanceof Error ? reason.message : 'Não foi possível autenticar') }
-  }
+    event.preventDefault();
+    setError("");
+    try {
+      const user =
+        mode === "login"
+          ? await login(email, password)
+          : await register(name, email, password);
+      setUser(user);
+      setSession(user);
+    } catch (reason) {
+      setError(
+        reason instanceof Error
+          ? reason.message
+          : "Não foi possível autenticar",
+      );
+    }
+  };
+
   const addWallet = async () => {
-    if (!session) return
-    const wallet: Wallet = { id: crypto.randomUUID(), label: 'Nova carteira', address: '0xabcdef1234567890abcdef1234567890abcdef12', network: 'Ethereum Sepolia' }
-    const user = await saveProfile({ ...session, wallets: [...session.wallets, wallet] }); setUser(user); setSession(user)
+    if (!session) return;
+    const wallet: Wallet = {
+      id: crypto.randomUUID(),
+      label: "Nova carteira",
+      address: "0xabcdef1234567890abcdef1234567890abcdef12",
+      network: "Ethereum Sepolia",
+    };
+    const user = await saveProfile({
+      ...session,
+      wallets: [...session.wallets, wallet],
+    });
+    setUser(user);
+    setSession(user);
+  };
+
+  const removeWallet = async (walletId: string, walletLabel: string) => {
+    if (!session) return;
+    if (!window.confirm(`Excluir a carteira "${walletLabel}"?`)) return;
+    const user = await saveProfile({
+      ...session,
+      wallets: session.wallets.filter((wallet) => wallet.id !== walletId),
+    });
+    setUser(user);
+    setSession(user);
+  };
+
+  if (!session) {
+    return (
+      <section className="mx-auto max-w-md px-5 py-12">
+        <h1 className="text-3xl font-bold">Sua conta</h1>
+        <div className="mt-6 grid grid-cols-2 rounded-md bg-white/5 p-1">
+          <button
+            onClick={() => setMode("login")}
+            className={`cursor-pointer rounded-md py-2 transition duration-200 active:scale-[0.98] ${mode === "login" ? "bg-violet-500 shadow-lg shadow-violet-950/20" : "hover:bg-white/10"}`}
+          >
+            Entrar
+          </button>
+          <button
+            onClick={() => setMode("register")}
+            className={`cursor-pointer rounded-md py-2 transition duration-200 active:scale-[0.98] ${mode === "register" ? "bg-violet-500 shadow-lg shadow-violet-950/20" : "hover:bg-white/10"}`}
+          >
+            Cadastrar
+          </button>
+        </div>
+        <form onSubmit={submit} className="mt-6 space-y-4">
+          {mode === "register" && (
+            <label className="block text-sm">
+              Nome
+              <input
+                required
+                minLength={3}
+                value={name}
+                onChange={(event) => setName(event.target.value)}
+                className="mt-2 h-11 w-full rounded-md border border-white/10 bg-[#111220] px-3"
+              />
+            </label>
+          )}
+          <label className="block text-sm">
+            E-mail
+            <input
+              required
+              type="email"
+              value={email}
+              onChange={(event) => setEmail(event.target.value)}
+              className="mt-2 h-11 w-full rounded-md border border-white/10 bg-[#111220] px-3"
+            />
+          </label>
+          <label className="block text-sm">
+            Senha
+            <input
+              required
+              minLength={6}
+              type="password"
+              value={password}
+              onChange={(event) => setPassword(event.target.value)}
+              className="mt-2 h-11 w-full rounded-md border border-white/10 bg-[#111220] px-3"
+            />
+          </label>
+          {error && (
+            <p role="alert" className="text-sm text-red-300">
+              {error}
+            </p>
+          )}
+          <button className="w-full cursor-pointer rounded-md bg-violet-500 py-3 font-semibold transition duration-200 hover:bg-violet-400 hover:shadow-lg hover:shadow-violet-950/30 active:scale-[0.98]">
+            {mode === "login" ? "Entrar" : "Criar conta"}
+          </button>
+        </form>
+        <p className="mt-4 text-xs text-slate-500">
+          Demo: demo@nexus.com / demo123
+        </p>
+      </section>
+    );
   }
-  if (!session) return <section className="mx-auto max-w-md px-5 py-12"><h1 className="text-3xl font-bold">Sua conta</h1><div className="mt-6 grid grid-cols-2 rounded-md bg-white/5 p-1"><button onClick={() => setMode('login')} className={`cursor-pointer rounded-md py-2 transition duration-200 active:scale-[0.98] ${mode === 'login' ? 'bg-violet-500 shadow-lg shadow-violet-950/20' : 'hover:bg-white/10'}`}>Entrar</button><button onClick={() => setMode('register')} className={`cursor-pointer rounded-md py-2 transition duration-200 active:scale-[0.98] ${mode === 'register' ? 'bg-violet-500 shadow-lg shadow-violet-950/20' : 'hover:bg-white/10'}`}>Cadastrar</button></div><form onSubmit={submit} className="mt-6 space-y-4">{mode === 'register' && <label className="block text-sm">Nome<input required minLength={3} value={name} onChange={(event) => setName(event.target.value)} className="mt-2 h-11 w-full rounded-md border border-white/10 bg-[#111220] px-3" /></label>}<label className="block text-sm">E-mail<input required type="email" value={email} onChange={(event) => setEmail(event.target.value)} className="mt-2 h-11 w-full rounded-md border border-white/10 bg-[#111220] px-3" /></label><label className="block text-sm">Senha<input required minLength={6} type="password" value={password} onChange={(event) => setPassword(event.target.value)} className="mt-2 h-11 w-full rounded-md border border-white/10 bg-[#111220] px-3" /></label>{error && <p role="alert" className="text-sm text-red-300">{error}</p>}<button className="w-full cursor-pointer rounded-md bg-violet-500 py-3 font-semibold transition duration-200 hover:bg-violet-400 hover:shadow-lg hover:shadow-violet-950/30 active:scale-[0.98]">{mode === 'login' ? 'Entrar' : 'Criar conta'}</button></form><p className="mt-4 text-xs text-slate-500">Demo: demo@nexus.com / demo123</p></section>
-  return <section className="mx-auto max-w-3xl px-5 py-12"><div className="flex items-center justify-between"><div><p className="text-sm text-violet-300">Perfil</p><h1 className="mt-1 text-3xl font-bold">{session.name}</h1></div><button onClick={() => { setUser(null); setSession(null) }} className="rounded-md border border-white/15 px-4 py-2">Sair</button></div><p className="mt-2 text-slate-400">{session.email}</p><section className="mt-8 rounded-lg border border-white/10 p-5"><div className="flex items-center justify-between"><h2 className="font-semibold">Carteiras</h2><button onClick={() => void addWallet()} className="rounded-md bg-violet-500 px-3 py-2 text-sm">Adicionar</button></div>{session.wallets.length === 0 && <p className="mt-4 text-sm text-slate-400">Nenhuma carteira cadastrada.</p>}<ul className="mt-4 space-y-3">{session.wallets.map((wallet) => <li key={wallet.id} className="rounded-md bg-white/5 p-3"><p>{wallet.label}</p><p className="mt-1 break-all text-xs text-slate-400">{wallet.address}</p><p className="mt-1 text-xs text-cyan-200">{wallet.network}</p></li>)}</ul></section><Link to="/checkout" className="mt-6 inline-block text-violet-300">Continuar para checkout</Link></section>
+
+  return (
+    <section className="mx-auto max-w-3xl px-5 py-12">
+      <div className="flex items-center justify-between">
+        <div>
+          <p className="text-sm text-violet-300">Perfil</p>
+          <h1 className="mt-1 text-3xl font-bold">{session.name}</h1>
+        </div>
+        <button
+          onClick={() => {
+            setUser(null);
+            setSession(null);
+          }}
+          className="rounded-md border border-white/15 px-4 py-2"
+        >
+          Sair
+        </button>
+      </div>
+      <p className="mt-2 text-slate-400">{session.email}</p>
+      <section className="mt-8 rounded-lg border border-white/10 p-5">
+        <div className="flex items-center justify-between">
+          <h2 className="font-semibold">Carteiras</h2>
+          <button
+            onClick={() => void addWallet()}
+            className="rounded-md bg-violet-500 px-3 py-2 text-sm"
+          >
+            Adicionar
+          </button>
+        </div>
+        {session.wallets.length === 0 && (
+          <p className="mt-4 text-sm text-slate-400">
+            Nenhuma carteira cadastrada.
+          </p>
+        )}
+        <ul className="mt-4 space-y-3">
+          {session.wallets.map((wallet) => (
+            <li
+              key={wallet.id}
+              className="flex items-start gap-4 rounded-md bg-white/5 p-3"
+            >
+              <div className="min-w-0 flex-1">
+                <p>{wallet.label}</p>
+                <p className="mt-1 break-all text-xs text-slate-400">
+                  {wallet.address}
+                </p>
+                <p className="mt-1 text-xs text-cyan-200">{wallet.network}</p>
+              </div>
+              <button
+                type="button"
+                aria-label={`Excluir carteira ${wallet.label}`}
+                onClick={() => void removeWallet(wallet.id, wallet.label)}
+                className="grid h-9 w-9 shrink-0 cursor-pointer place-items-center rounded-md border border-white/10 text-slate-300 transition duration-200 hover:border-red-400/50 hover:bg-red-400/10 hover:text-red-300 active:scale-95"
+              >
+                <Trash2 size={18} aria-hidden="true" />
+              </button>
+            </li>
+          ))}
+        </ul>
+      </section>
+      <Link to="/checkout" className="mt-6 inline-block text-violet-300">
+        Continuar para checkout
+      </Link>
+    </section>
+  );
 }

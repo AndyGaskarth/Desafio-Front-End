@@ -1,13 +1,13 @@
-import { NFTCard } from './NFTCard'
-import type { NFT } from '../types/nft'
+import { NFTCard } from "./NFTCard";
+import type { NFT } from "../types/nft";
 
 interface NFTGridProps {
-  nfts: NFT[]
+  nfts: NFT[];
 }
 
 export function NFTGrid({ nfts }: NFTGridProps) {
   if (nfts.length === 0) {
-    return <p className="text-center text-slate-400">Nenhum NFT encontrado.</p>
+    return <p className="text-center text-slate-400">Nenhum NFT encontrado.</p>;
   }
 
   return (
@@ -16,5 +16,5 @@ export function NFTGrid({ nfts }: NFTGridProps) {
         <NFTCard key={nft.id} nft={nft} />
       ))}
     </div>
-  )
+  );
 }

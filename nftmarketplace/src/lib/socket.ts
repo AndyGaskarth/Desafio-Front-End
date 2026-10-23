@@ -2,7 +2,14 @@ import { io, type Socket } from 'socket.io-client'
 
 let socket: Socket | undefined
 export function getSocket() {
-  if (!socket) socket = io({ path: '/socket.io', transports: ['websocket', 'polling'] })
+  const socketUrl = import.meta.env.VITE_SOCKET_URL as string | undefined;
+  if (!socket) {
+    socket = io(socketUrl ?? '/', {
+      path: '/socket.io',
+      transports: ['websocket', 'polling'],
+      autoConnect: Boolean(socketUrl),
+    });
+  }
   return socket
 }
 

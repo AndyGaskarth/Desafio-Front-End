@@ -1,0 +1,4 @@
+{
+  "extends": "./lighthouserc.json",
+  "ci": { "collect": { "settings": { "preset": "desktop", "throttlingMethod": "simulate" } } }
+}

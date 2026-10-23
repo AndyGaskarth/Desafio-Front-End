@@ -38,117 +38,163 @@ export function CataloguePage() {
   );
   const perPage = 6;
   const pages = Math.max(1, Math.ceil(filtered.length / perPage));
-  const items = filtered.slice((page - 1) * perPage, page * perPage);
+  const currentPage = Math.min(page, pages);
+  const items = filtered.slice((currentPage - 1) * perPage, currentPage * perPage);
   const update = (values: Record<string, string | number>) =>
     navigate({
       to: "/",
       search: { q: query, available, sort, page: 1, ...values },
     });
+  const featured = data[0];
+
   return (
-    <section className="mx-auto max-w-7xl px-5 py-12 sm:px-8">
-      <p className="text-xs font-bold uppercase tracking-[0.25em] text-violet-300">
-        A coleção
-      </p>
-      <h1 className="mt-2 text-3xl font-bold sm:text-5xl">
-        Encontre sua criatura cósmica
-      </h1>
-      <div className="mt-8 grid gap-3 rounded-lg border border-white/10 bg-[#111220] p-4 md:grid-cols-[1fr_180px_180px]">
-        <label className="relative">
-          <span className="sr-only">Buscar por nome ou criador</span>
-          <Search className="absolute left-3 top-3 text-slate-500" size={18} />
-          <input
-            value={query}
-            onChange={(event) => update({ q: event.target.value })}
-            className="h-11 w-full rounded-md border border-white/10 bg-[#090a14] pl-10 pr-3 outline-none focus:border-violet-400"
-            placeholder="Nome ou criador"
-          />
-        </label>
-        <select
-          aria-label="Disponibilidade"
-          value={available}
-          onChange={(event) => update({ available: event.target.value })}
-          className="h-11 rounded-md border border-white/10 bg-[#090a14] px-3"
-        >
-          <option value="all">Todos</option>
-          <option value="available">Disponíveis</option>
-        </select>
-        <select
-          aria-label="Ordenação"
-          value={sort}
-          onChange={(event) => update({ sort: event.target.value })}
-          className="h-11 rounded-md border border-white/10 bg-[#090a14] px-3"
-        >
-          <option value="featured">Em destaque</option>
-          <option value="price-asc">Menor preço</option>
-          <option value="name">Nome</option>
-        </select>
-      </div>
-      {isPending && (
-        <div className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {[1, 2, 3].map((key) => (
-            <div
-              key={key}
-              className="h-96 animate-pulse rounded-lg bg-white/5"
-            />
-          ))}
+    <div className="catalogue-page">
+      <section className="catalogue-hero" id="inicio">
+        <div className="catalogue-hero-copy">
+          <p className="eyebrow">Bem-vindo à Kurio</p>
+          <h1>Encontre sua criatura cósmica</h1>
+          <p className="catalogue-hero-description">
+            Descubra NFTs selecionados de criadores independentes e encontre
+            uma peça única para sua coleção.
+          </p>
+          <a className="warm-button catalogue-hero-button" href="#colecao">
+            Explorar coleção
+          </a>
         </div>
-      )}
-      {isError && (
-        <p className="mt-8 rounded-lg border border-red-400/30 bg-red-400/10 p-4 text-red-200">
-          Não foi possível carregar os NFTs.
-        </p>
-      )}
-      {!isPending && !isError && items.length === 0 && (
-        <p className="mt-10 text-center text-slate-400">
-          Nenhum NFT encontrado.
-        </p>
-      )}
-      {!isPending && (
-        <div className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {items.map((item) => (
-            <Link
-              to="/nft/$id"
-              params={{ id: item.id }}
-              key={item.id}
-              className="group overflow-hidden rounded-lg border border-white/10 bg-[#111220] focus-visible:outline focus-visible:outline-2 focus-visible:outline-violet-400"
-            >
-              <img
-                src={responsiveImage(item.id, item.image).image}
-                srcSet={responsiveImage(item.id, item.image).srcSet}
-                sizes="(max-width: 640px) 92vw, (max-width: 1024px) 45vw, 390px"
-                alt=""
-                loading="lazy"
-                decoding="async"
-                className="aspect-square w-full object-cover transition duration-300 group-hover:scale-[1.02]"
-              />
-              <div className="p-5">
-                <h2 className="text-lg font-semibold">{item.name}</h2>
-                <p className="mt-1 text-sm text-slate-400">
-                  por {item.creator}
-                </p>
-                <div className="mt-4 flex justify-between border-t border-white/10 pt-4">
-                  <span className="text-xs text-slate-500">Preço</span>
-                  <strong className="text-cyan-200">{money(item.price)}</strong>
-                </div>
-              </div>
-            </Link>
-          ))}
-        </div>
-      )}
-      <div className="mt-8 flex justify-center gap-2" aria-label="Paginação">
-        {Array.from({ length: pages }, (_, index) => index + 1).map(
-          (number) => (
-            <button
-              key={number}
-              onClick={() => update({ page: number })}
-              aria-current={page === number ? "page" : undefined}
-              className={`h-10 w-10 rounded-md border ${page === number ? "border-violet-400 bg-violet-500" : "border-white/10"}`}
-            >
-              {number}
-            </button>
-          ),
+        {featured && !query && (
+          <Link
+            to="/nft/$id"
+            params={{ id: featured.id }}
+            className="catalogue-featured-image"
+            aria-label={`Ver NFT em destaque: ${featured.name}`}
+          >
+            <img src={featured.image} alt={featured.name} fetchPriority="high" />
+            <span className="featured-label">NFT em destaque</span>
+            <span className="featured-title">{featured.name}</span>
+          </Link>
         )}
-      </div>
-    </section>
+      </section>
+
+      <section className="catalogue-layout" id="colecao">
+        <aside className="catalogue-sidebar" aria-label="Filtros do catálogo">
+          <div>
+            <h2>Explorar coleções</h2>
+            <p className="sidebar-intro">Peças selecionadas para descobrir e colecionar.</p>
+          </div>
+          <label className="catalogue-search">
+            <span className="sr-only">Buscar por nome ou criador</span>
+            <Search size={16} aria-hidden="true" />
+            <input
+              value={query}
+              onChange={(event) => update({ q: event.target.value })}
+              placeholder="Nome ou criador"
+            />
+          </label>
+          <label className="catalogue-filter">
+            <span>Disponibilidade</span>
+            <select
+              aria-label="Disponibilidade"
+              value={available}
+              onChange={(event) => update({ available: event.target.value })}
+            >
+              <option value="all">Todos os NFTs</option>
+              <option value="available">Disponíveis</option>
+            </select>
+          </label>
+          <label className="catalogue-filter">
+            <span>Ordenar por</span>
+            <select
+              aria-label="Ordenação"
+              value={sort}
+              onChange={(event) => update({ sort: event.target.value })}
+            >
+              <option value="featured">Em destaque</option>
+              <option value="price-asc">Menor preço</option>
+              <option value="name">Nome</option>
+            </select>
+          </label>
+          <div className="sidebar-note">
+            <span className="sidebar-note-dot" />
+            <p>Novos itens e artistas são adicionados regularmente.</p>
+          </div>
+        </aside>
+
+        <div className="catalogue-results">
+          <div className="catalogue-heading">
+            <div>
+              <p className="eyebrow">Mercado / NFTs</p>
+              <h2>Todos os NFTs</h2>
+            </div>
+            <span>{filtered.length} itens disponíveis</span>
+          </div>
+          {isPending && (
+            <div className="catalogue-grid" aria-label="Carregando NFTs">
+              {[1, 2, 3].map((key) => (
+                <div key={key} className="catalogue-skeleton" />
+              ))}
+            </div>
+          )}
+          {isError && (
+            <p className="catalogue-error" role="alert">
+              Não foi possível carregar os NFTs.
+            </p>
+          )}
+          {!isPending && !isError && items.length === 0 && (
+            <p className="catalogue-empty">Nenhum NFT encontrado.</p>
+          )}
+          {!isPending && !isError && (
+            <div className="catalogue-grid">
+              {items.map((item) => {
+                const image = responsiveImage(item.id, item.image);
+                return (
+                  <Link
+                    to="/nft/$id"
+                    params={{ id: item.id }}
+                    key={item.id}
+                    className="catalogue-card"
+                  >
+                    <div className="catalogue-card-image">
+                      <img
+                        src={image.image}
+                        srcSet={image.srcSet}
+                        sizes="(max-width: 640px) 45vw, (max-width: 1024px) 30vw, 260px"
+                        alt={item.name}
+                        loading="lazy"
+                        decoding="async"
+                      />
+                      <span aria-hidden="true" className="card-heart">♡</span>
+                    </div>
+                    <div className="catalogue-card-details">
+                      <div className="catalogue-card-title">
+                        <h3>{item.name}</h3>
+                        <span>{item.availableQuantity} un.</span>
+                      </div>
+                      <p>por {item.creator}</p>
+                      <strong>{money(item.price)}</strong>
+                    </div>
+                  </Link>
+                );
+              })}
+            </div>
+          )}
+          {!isPending && pages > 1 && (
+            <nav className="catalogue-pagination" aria-label="Paginação">
+              {Array.from({ length: pages }, (_, index) => index + 1).map(
+                (number) => (
+                  <button
+                    key={number}
+                    onClick={() => update({ page: number })}
+                    aria-current={currentPage === number ? "page" : undefined}
+                    className={currentPage === number ? "is-current" : ""}
+                  >
+                    {number}
+                  </button>
+                ),
+              )}
+            </nav>
+          )}
+        </div>
+      </section>
+    </div>
   );
 }

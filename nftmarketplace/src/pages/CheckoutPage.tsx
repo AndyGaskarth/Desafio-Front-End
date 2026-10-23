@@ -67,7 +67,7 @@ export function CheckoutPage() {
     }
   };
   return (
-    <section className="mx-auto max-w-3xl px-5 py-12 sm:px-8">
+    <section className="checkout-page">
       <h1 className="text-3xl font-bold">Checkout</h1>
       {status === "confirmed" ? (
         <div
@@ -92,59 +92,63 @@ export function CheckoutPage() {
             event.preventDefault();
             void pay();
           }}
-          className="mt-8 space-y-6"
+          className="checkout-content"
         >
-          <fieldset className="rounded-lg border border-white/10 p-5">
-            <legend className="px-2 font-semibold">
-              Dados do colecionador
-            </legend>
-            <label className="block text-sm" htmlFor="collector">
-              Nome completo
-            </label>
-            <input
-              id="collector"
-              required
-              minLength={3}
-              value={collector}
-              onChange={(event) => setCollector(event.target.value)}
-              className="mt-2 h-11 w-full rounded-md border border-white/10 bg-[#111220] px-3"
-            />
-          </fieldset>
-          <fieldset className="rounded-lg border border-white/10 p-5">
-            <legend className="px-2 font-semibold">Carteira e rede</legend>
-            {wallet ? (
-              <>
-                <p>{wallet.label}</p>
-                <p className="mt-1 break-all text-sm text-slate-400">
-                  {wallet.address}
+          <div className="checkout-left">
+            <fieldset className="rounded-lg border border-white/10 p-5">
+              <legend className="px-2 font-semibold">
+                Dados do colecionador
+              </legend>
+              <label className="block text-sm" htmlFor="collector">
+                Nome completo
+              </label>
+              <input
+                id="collector"
+                required
+                minLength={3}
+                value={collector}
+                onChange={(event) => setCollector(event.target.value)}
+                className="mt-2 h-11 w-full rounded-md border border-white/10 bg-[#111220] px-3"
+              />
+            </fieldset>
+            <fieldset className="rounded-lg border border-white/10 p-5">
+              <legend className="px-2 font-semibold">Carteira e rede</legend>
+              {wallet ? (
+                <>
+                  <p>{wallet.label}</p>
+                  <p className="mt-1 break-all text-sm text-slate-400">
+                    {wallet.address}
+                  </p>
+                  <p className="mt-2 text-sm text-cyan-200">{wallet.network}</p>
+                </>
+              ) : (
+                <p className="text-amber-200">
+                  Cadastre uma carteira na sua conta.
                 </p>
-                <p className="mt-2 text-sm text-cyan-200">{wallet.network}</p>
-              </>
-            ) : (
-              <p className="text-amber-200">
-                Cadastre uma carteira na sua conta.
+              )}
+            </fieldset>
+          </div>
+          <aside className="checkout-right">
+            <div className="rounded-lg border border-white/10 p-5">
+              <h2 className="font-semibold">Resumo do pedido</h2>
+              <p className="mt-2 text-slate-300">
+                {cart.length} item(ns) · {money(subtotal)}
+              </p>
+            </div>
+            {status === "error" && (
+              <p role="alert" className="text-red-300">
+                Pagamento recusado. Tente novamente.
               </p>
             )}
-          </fieldset>
-          <div className="rounded-lg border border-white/10 p-5">
-            <h2 className="font-semibold">Revisão do pedido</h2>
-            <p className="mt-2 text-slate-300">
-              {cart.length} item(ns) · {money(subtotal)}
-            </p>
-          </div>
-          {status === "error" && (
-            <p role="alert" className="text-red-300">
-              Pagamento recusado. Tente novamente.
-            </p>
-          )}
-          <button
-            disabled={!wallet || !collector.trim() || status === "pending"}
-            className="w-full rounded-md bg-violet-500 py-3 font-semibold disabled:opacity-40"
-          >
-            {status === "pending"
-              ? "Processando pagamento..."
-              : "Confirmar pagamento"}
-          </button>
+            <button
+              disabled={!wallet || !collector.trim() || status === "pending"}
+              className="w-full rounded-md bg-violet-500 py-3 font-semibold disabled:opacity-40"
+            >
+              {status === "pending"
+                ? "Processando pagamento..."
+                : "Confirmar pagamento"}
+            </button>
+          </aside>
         </form>
       )}
     </section>

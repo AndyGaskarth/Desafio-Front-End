@@ -61,7 +61,7 @@ export function AppShell() {
               {user && <span className="sr-only">{user.name}</span>}
             </Link>
             <Link to="/account" className="warm-button site-login">
-              Entrar
+              {user?.name ?? "Entrar"}
             </Link>
           </nav>
         </div>

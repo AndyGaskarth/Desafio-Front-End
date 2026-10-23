@@ -13,6 +13,7 @@ test('account wallet management', async ({ page }) => {
   await page.goto('/account')
   await page.locator('form').getByRole('button', { name: 'Entrar', exact: true }).click()
   await expect(page.getByRole('heading', { name: 'Colecionador Demo' })).toBeVisible()
+  await expect(page.getByRole('link', { name: 'Colecionador Demo' })).toBeVisible()
   await page.getByRole('button', { name: 'Adicionar', exact: true }).click()
   await expect(page.getByText('Nova carteira')).toBeVisible()
   page.once('dialog', (dialog) => dialog.accept())
